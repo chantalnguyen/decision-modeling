@@ -87,7 +87,7 @@ J = sum(J)';
 
 theta_p = [0.1; 0.1];
 % have to exclude P_hit = 1
-powerfun = @(theta_p)powerf(H(2:end-1),J(2:end-1),theta_p,P_hit_range(2:end-1));
+powerfun = @(theta_p)llfun(H(2:end-1),J(2:end-1),theta_p,P_hit_range(2:end-1));
 
 options = optimoptions(@fminunc,'MaxFunEvals',10000);
 [theta_power,fval] = fminunc(powerfun,theta_p,options);

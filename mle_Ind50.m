@@ -77,7 +77,7 @@ H = sum(H)';
 J = sum(J)';
 
 theta_p = [0.1; 0.1];
-powerfun = @(theta_p)powerf(H(2:end),J(2:end),theta_p,P_hit_range(2:end));
+powerfun = @(theta_p)llfun(H(2:end),J(2:end),theta_p,P_hit_range(2:end));
 
 options = optimoptions(@fminunc,'MaxFunEvals',10000);
 
