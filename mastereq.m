@@ -18,12 +18,13 @@ function [mean_evac,T,P] = mastereq(q,tf,ti,P_init,N)
 tic;
 
 if nargin<3
-    ti = 1;
     
+    ti = 1;
+    N = 51;
+
     % initial probability distribution with all individuals at home
     P_init = zeros(N,1);
     P_init(1) = 1;
-    N = 51;
 end
 
 T_range = [ti tf];
