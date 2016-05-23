@@ -30,7 +30,7 @@ evacuateTime(evacuateTime == 0) = 1; % evacuating at 0 = evacuating at 1
 rP_hits = zeros(60,length(z)); % rounded P_hit trajectories for each trial
 evac = rP_hits; % empirical cumulative evacuations for each trial
 evacTimes = zeros(50,length(z)); % times of evacuation DECISIONS for each trial
-evacPhits = evacTimes; % P_hits of evacuation DECISIONS for each trail
+evacPhits = evacTimes; % P_hits of evacuation DECISIONS for each trial
 
 % this is our data set
 for i = 1:length(z)
@@ -71,7 +71,7 @@ else
         for j = 1:length(z) % iterate through each trial
             indvEvacTime = evacTimes(i,j); % this is the time the individual (j) evacuated in trial (r)
             if indvEvacTime == -1 % no decision; ALL rP_hits seen until when shelter is full NOT end of trial (P_hit = 1 or 0) 
-                assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
+%                 assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
                 if evac(end,j) < space % if shelter did not fill, count all rP_hits seen
                     h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins); % have to bin only up until when the shelter space is full, not phits seen
                 else % if shelter fills up, count rP_hits seen until shelter is full
@@ -81,7 +81,7 @@ else
                     h1 = histcounts(rP_hits(1:find(evac(:,j)==space,1,'first'),j),bins); 
                 end
             else 
-                assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
+%                 assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
                 h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
             end
             H(i,:) = H(i,:)+h1;

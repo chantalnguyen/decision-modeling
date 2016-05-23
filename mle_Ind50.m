@@ -28,7 +28,7 @@ evacuateTime(evacuateTime == 0) = 1; % evacuating at 0 = evacuating at 1
 rP_hits = zeros(60,length(z)); % rounded P_hit trajectories for each trial
 evac = rP_hits; % empirical cumulative evacuations for each trial
 evacTimes = zeros(50,length(z)); % times of evacuation decisions for each trial
-evacPhits = evacTimes; % P_hits of evacuation decisions for each trail
+evacPhits = evacTimes; % P_hits of evacuation decisions for each trial
 
 % this is our data set
 for i = 1:length(z)
