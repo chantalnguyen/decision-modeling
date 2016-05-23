@@ -15,7 +15,12 @@ FTG_25 = find(gamestatus(:,1)==1 & gamestatus(:,3)==25); FTG_25 = FTG_25(~ismemb
 LTG_25 = find(gamestatus(:,1)==2 & gamestatus(:,3)==25); LTG_25 = LTG_25(~ismember(LTG_25,missing));
 MV_25  = find(gamestatus(:,1)==3 & gamestatus(:,3)==25); MV_25  = MV_25(~ismember(MV_25,missing));
 Group  = sort(vertcat(FTG_5,LTG_5,MV_5,FTG_25,LTG_25,MV_25));
+
+Ind(:,2:4) = gamestatus(Ind(:,1),:);
 Group(:,2:4) = gamestatus(Group(:,1),:);
+FTG = Group(Group(:,2) == 1,:);
+LTG = Group(Group(:,2) == 2,:);
+MV = Group(Group(:,2) == 3,:);
 
 ftg5sc = peoeva(:,FTG_5);
 ftg25sc = peoeva(:,FTG_25);
@@ -31,6 +36,8 @@ ltg5sc = calc_scores(ltg5sc,LTG_5,gameinfo);
 ltg25sc = calc_scores(ltg25sc,LTG_25,gameinfo);
 mv5sc = calc_scores(mv5sc,MV_5,gameinfo);
 mv25sc = calc_scores(mv25sc,MV_25,gameinfo);
+allscores = calc_scores(peoeva,1:160,gameinfo);
+allscores(:,missing) = 0;
 
 % Sum scores
 groupsc = horzcat(ftg5sc,ftg25sc,ltg5sc,ltg25sc,mv5sc,mv25sc);
@@ -42,11 +49,8 @@ ltg25_tot = sum(ltg25sc,2);
 mv5_tot = sum(mv5sc,2);
 mv25_tot = sum(mv25sc,2);
 
-allscores = calc_scores(peoeva,1:160,gameinfo);
-allscores(:,missing) = 0;
-
 % Sort by individual score
-indsc = allscores(:,Ind);
+indsc = allscores(:,Ind(:,1));
 [~,indSort] = sort(sum(indsc,2));
 group_tot_sort = group_tot(indSort);
 
@@ -66,6 +70,7 @@ plot(mv25_tot(indSort)+150,'o');
 load experiment
 load peoeva
 
+
 % Find trial numbers
 Ind50  = find(gamestatus(:,1)==0 & gamestatus(:,2)==50); Ind50  = Ind50(~ismember(Ind50,missing));
 Ind25  = find(gamestatus(:,1)==0 & gamestatus(:,2)==25); Ind25  = Ind25(~ismember(Ind25,missing));
@@ -77,15 +82,20 @@ MV_5   = find(gamestatus(:,1)==3 & gamestatus(:,3)==5);  MV_5   = MV_5(~ismember
 FTG_25 = find(gamestatus(:,1)==1 & gamestatus(:,3)==25); FTG_25 = FTG_25(~ismember(FTG_25,missing));
 LTG_25 = find(gamestatus(:,1)==2 & gamestatus(:,3)==25); LTG_25 = LTG_25(~ismember(LTG_25,missing));
 MV_25  = find(gamestatus(:,1)==3 & gamestatus(:,3)==25); MV_25  = MV_25(~ismember(MV_25,missing));
+Group  = sort(vertcat(FTG_5,LTG_5,MV_5,FTG_25,LTG_25,MV_25));
 
-% Ind = Ind(Ind>44);
+Ind(:,2:4) = gamestatus(Ind(:,1),:);
+Group(:,2:4) = gamestatus(Group(:,1),:);
+FTG = Group(Group(:,2) == 1,:);
+LTG = Group(Group(:,2) == 2,:);
+MV = Group(Group(:,2) == 3,:);
+
 FTG_5 = FTG_5(FTG_5 > 44);
 FTG_25 = FTG_25(FTG_25 > 44);
 LTG_5 = LTG_5(LTG_5 > 44);
 LTG_25 = LTG_25(LTG_25 > 44);
 MV_5 = MV_5(MV_5 > 44);
 MV_25 = MV_25(MV_25 > 44);
-
 
 ftg5sc = peoeva(:,FTG_5);
 ftg25sc = peoeva(:,FTG_25);
@@ -101,6 +111,8 @@ ltg5sc = calc_scores(ltg5sc,LTG_5,gameinfo);
 ltg25sc = calc_scores(ltg25sc,LTG_25,gameinfo);
 mv5sc = calc_scores(mv5sc,MV_5,gameinfo);
 mv25sc = calc_scores(mv25sc,MV_25,gameinfo);
+allscores = calc_scores(peoeva,1:160,gameinfo);
+allscores(:,missing) = 0;
 
 % Sum scores
 groupsc = horzcat(ftg5sc,ftg25sc,ltg5sc,ltg25sc,mv5sc,mv25sc);
@@ -112,11 +124,8 @@ ltg25_tot = sum(ltg25sc,2);
 mv5_tot = sum(mv5sc,2);
 mv25_tot = sum(mv25sc,2);
 
-allscores = calc_scores(peoeva,1:160,gameinfo);
-allscores(:,missing) = 0;
-
 % Sort by individual score
-indsc = allscores(:,Ind);
+indsc = allscores(:,Ind(:,1));
 [~,indSort] = sort(sum(indsc,2));
 group_tot_sort = group_tot(indSort);
 
@@ -124,10 +133,9 @@ group_tot_sort = group_tot(indSort);
 figure('position',[0 0 700 525])
 plot(group_tot_sort,'o','MarkerSize',6);
 hold on
-blank=plot(1:50,1:50,'o','color',[1 1 1]);
+blank = plot(1:50,1:50,'o','color',[1 1 1]);
 set(blank,'visible','off')
-ax = gca;
-ax.ColorOrderIndex = 2;
+ax = gca; ax.ColorOrderIndex = 2; 
 plot(ftg5_tot(indSort)+230,'o','MarkerSize',6);
 h = plot(ftg25_tot(indSort)+230,'o','MarkerSize',6);
 hcolor = get(h,'color');
@@ -136,7 +144,7 @@ plot(ltg25_tot(indSort)+230,'o','MarkerSize',6);
 plot(mv5_tot(indSort)+230,'o','MarkerSize',6);
 plot(mv25_tot(indSort)+230,'o','MarkerSize',6);
 set(gca,'ticklength',[0.005 0.005])
-overlaps = find(ftg25_tot(indSort)==38);
+overlaps = find(ftg25_tot(indSort)==38); % some of the points coincide, make them more obvious
 plot(overlaps,38+230,'o','MarkerSize',4,'color',hcolor)
 
 ylim([250 440])
