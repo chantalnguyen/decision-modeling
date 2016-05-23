@@ -183,4 +183,6 @@ mse_cv = mean(rss_cv);
 % mse_cv_model = mean(rss_cv_model);
 rmse_cv = sqrt(mse_cv);
 
+% save workspace
+clear bins temp i j
 save crossval_Ind50

@@ -1,4 +1,3 @@
-function [mean_evac,T,P] = mastereq(q,tf,ti,P_init,N)
 % Evaluation of master equation for P_hit-dependent decision model
 % Inputs:
 %   q: decision model q (typically a power-law function evaluated for
@@ -14,6 +13,8 @@ function [mean_evac,T,P] = mastereq(q,tf,ti,P_init,N)
 %   mean_evac: mean number of evacuations at each time step
 %   T: vector of time steps
 %   P: full probability distribution of possible states at each time step
+
+function [mean_evac,T,P] = mastereq(q,tf,ti,P_init,N)
 
 tic;
 

@@ -27,8 +27,8 @@ evacuateTime(evacuateTime == 0) = 1; % evacuating at 0 = evacuating at 1
 
 rP_hits = zeros(60,length(z)); % rounded P_hit trajectories for each trial
 evac = rP_hits; % empirical cumulative evacuations for each trial
-evacTimes = zeros(50,length(z)); % times of evacuation DECISIONS for each trial
-evacPhits = evacTimes; % P_hits of evacuation DECISIONS for each trail
+evacTimes = zeros(50,length(z)); % times of evacuation decisions for each trial
+evacPhits = evacTimes; % P_hits of evacuation decisions for each trail
 
 % this is our data set
 for i = 1:length(z)
@@ -76,19 +76,19 @@ end
 H = sum(H)';
 J = sum(J)';
 
-theta_p = [0.1; 0.1];
+theta_0 = [0.8; 10];
 powerfun = @(theta_p)llfun(H(2:end),J(2:end),theta_p,P_hit_range(2:end));
 
 options = optimoptions(@fminunc,'MaxFunEvals',10000);
 
-% minimize negative of likelihood function
-[theta_power,fval] = fminunc(powerfun,theta_p,options);
+% minimize (negative of) log-likelihood function
+[theta,~] = fminunc(powerfun,theta_0,options);
 
 power_model = @(Ph,theta_p) theta_p(1)*Ph.^theta_p(2);
 
 % determine standard deviations from boostrapping
-% [bootstat_power,bootsam_power]=bootstrp(1000,@(z)powerfit(z,gameinfo,evapeocumu,evacuateTime,evacuateProb),z);
-% stdevs_power = std(bootstat_power);
+[bootstat,bootsam]=bootstrp(1000,@(z)mle_fit(z,gameinfo,evapeocumu,evacuateTime,evacuateProb),z);
+std_theta = std(bootstat);
 
 % plot decision model
 % figure()
@@ -113,7 +113,7 @@ mProbs_Ind50 = cell(16,1);
 stdevs_Ind50 = cell(16,1);
 T_Ind50 = cell(16,1);
 for i = 1:length(z)
-    [Ptest,Ttest,PPtest] = mastereq(power_model(rP_hits(:,i),theta_power),endTimes(i));
+    [Ptest,Ttest,PPtest] = mastereq(power_model(rP_hits(:,i),theta),endTimes(i));
     mProbs_Ind50{i} = Ptest;
     T_Ind50{i} = Ttest;
     temp = interp1(Ttest,Ptest,1:1:endTimes(i));
@@ -138,5 +138,6 @@ mse_Ind50 = mean(rss_Ind50);
 rmse_Ind50 = sqrt(mse_Ind50);
 
 % save workspace
-save mle_Ind50
+clear bins temp i j
+save('data/mle_Ind50.mat')
     
