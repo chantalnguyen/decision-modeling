@@ -126,19 +126,18 @@ Jtrue = Jtrue(2:end);
 P_hit_range = P_hit_range(2:end);
 
 
-theta_p = [0.1; 0.1];
-powerfun = @(theta_p)powerf(Htrue',Jtrue',theta_p,P_hit_range);
+theta_0 = [0.8; 10];
+powerfun = @(theta_i)llfun(Htrue',Jtrue',theta_i,P_hit_range);
 options = optimoptions(@fminunc,'MaxFunEvals',10000);
-[theta_power_all,~] = fminunc(powerfun,theta_p,options);
-power_model = @(Ph,theta_p) theta_p(1)*Ph.^theta_p(2);
+[theta_power_all,~] = fminunc(powerfun,theta_0,options);
+power_model = @(Ph,theta_i) theta_i(1)*Ph.^theta_i(2);
 
 theta_cv=zeros(2,length(z));
 for i = 1:length(z)
-    theta = [0.1; 0.1];
-    powerfun = @(theta_p)powerf(H(:,:,i),J(:,:,i),theta_p,P_hit_range); % cannot include P_hit = 0
+    powerfun = @(theta_i)llfun(H(:,:,i),J(:,:,i),theta_i,P_hit_range); % cannot include P_hit = 0
 
     options = optimoptions(@fminunc,'MaxFunEvals',10000);
-    [thetas,~] = fminunc(powerfun,theta,options);
+    [thetas,~] = fminunc(powerfun,theta_0,options);
     theta_cv(:,i) = thetas;
 end
 %%
@@ -185,4 +184,4 @@ rmse_cv = sqrt(mse_cv);
 
 % save workspace
 clear bins temp i j
-save crossval_Ind50
+save('data/crossval_Ind50mat')

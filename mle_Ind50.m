@@ -77,14 +77,14 @@ H = sum(H)';
 J = sum(J)';
 
 theta_0 = [0.8; 10];
-powerfun = @(theta_p)llfun(H(2:end),J(2:end),theta_p,P_hit_range(2:end));
+powerfun = @(theta_i)llfun(H(2:end),J(2:end),theta_i,P_hit_range(2:end));
 
 options = optimoptions(@fminunc,'MaxFunEvals',10000);
 
 % minimize (negative of) log-likelihood function
 [theta,~] = fminunc(powerfun,theta_0,options);
 
-power_model = @(Ph,theta_p) theta_p(1)*Ph.^theta_p(2);
+power_model = @(Ph,theta_i) theta_i(1)*Ph.^theta_i(2);
 
 % determine standard deviations from boostrapping
 [bootstat,bootsam]=bootstrp(1000,@(z)mle_fit(z,gameinfo,evapeocumu,evacuateTime,evacuateProb),z);

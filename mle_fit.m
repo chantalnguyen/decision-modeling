@@ -98,10 +98,10 @@ end
 H = sum(H)';
 J = sum(J)';
 
-theta_p = [0.8; 10];
-powerfun = @(theta_p)llfun(H(2:end),J(2:end),theta_p,P_hit_range(2:end),space);
+theta_0 = [0.8; 10];
+powerfun = @(theta_i)llfun(H(2:end),J(2:end),theta_i,P_hit_range(2:end),space);
 
 options = optimoptions(@fminunc,'MaxFunEvals',10000);
-[theta,~] = fminunc(powerfun,theta_p,options);
+[theta,~] = fminunc(powerfun,theta_0,options);
 
 end
