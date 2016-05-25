@@ -107,11 +107,11 @@ for i = 1:size(rP_hits,2)
     endTimes(i) = find(rP_hits(:,i)==rP_hits(end,i),1,'first');
 end
 
-P_Ind50 = zeros(60,16);
-Probs_Ind50 = cell(16,1);
-mProbs_Ind50 = cell(16,1);
-stdevs_Ind50 = cell(16,1);
-T_Ind50 = cell(16,1);
+P_Ind50 = zeros(60,length(z)); % mean cumulative evacuations for each trial
+Probs_Ind50 = cell(length(z),1); % full probability distributions for each trial
+mProbs_Ind50 = cell(length(z),1); % (raw) mean cumulative evacuations for each trial
+stdevs_Ind50 = cell(length(z),1); % standard deviation of mean cumulative evacuations
+T_Ind50 = cell(length(z),1); % ODE time steps for each trial
 for i = 1:length(z)
     [Ptest,Ttest,PPtest] = mastereq(power_model(rP_hits(:,i),theta),endTimes(i));
     mProbs_Ind50{i} = Ptest;
