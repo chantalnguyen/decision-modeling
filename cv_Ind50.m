@@ -77,7 +77,7 @@ bins = -0.05:0.1:1.05;
 for n = 1:length(z)
     for i = 1:50 % iterate through each individual
         for j = 1:length(z)-1 % iterate through each trial
-            indvEvacTime = eTimes(i,j,n); % this is the time the individual (j) evacuated in trial (r)
+            indvEvacTime = eTimes(i,j,n); % this is the time the individual (i) evacuated in trial (j)
             if indvEvacTime == -1 % no decision; ALL P_hits seen until end of trial (P_hit = 1 or 0)
                 assert(looPhits(end,j,n) == 0 || looPhits(end,j,n) == 1);
                 h1 = histcounts(looPhits(1:find(looPhits(:,j,n)==looPhits(end,j,n),1,'first'),j,n),bins);
@@ -98,7 +98,7 @@ end
 
 for i = 1:50 % iterate through each individual
     for j = 1:length(z) % iterate through each trial
-        indvEvacTime = evacTimes(i,j); % this is the time the individual (j) evacuated in trial (r)
+        indvEvacTime = evacTimes(i,j); % this is the time the individual (i) evacuated in trial (j)
         if indvEvacTime == -1 % no decision; ALL P_hits seen until end of trial (P_hit = 1 or 0)
             assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
             h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins);

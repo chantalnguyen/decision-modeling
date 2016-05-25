@@ -57,7 +57,7 @@ bins = -0.05:0.1:1.05;
 
 for i = 1:50 % iterate through each individual
     for j = 1:length(z) % iterate through each trial
-        indvEvacTime = evacTimes(i,j); % this is the time the individual (j) evacuated in trial (r)
+        indvEvacTime = evacTimes(i,j); % this is the time the individual (i) evacuated in trial (j)
         if indvEvacTime == -1 % no decision; ALL rP_hits seen until end of trial (P_hit = 1 or 0)
             assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
             h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins);
