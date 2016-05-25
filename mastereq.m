@@ -14,12 +14,15 @@
 %   T: vector of time steps
 %   P: full probability distribution of possible states at each time step
 
-function [mean_evac,T,P] = mastereq(q,tf,ti,P_init,N)
+function [mean_evac,T,P] = mastereq(q,tf,space,ti,P_init,N)
 
 tic;
 
-if nargin<3
-    
+if nargin < 3
+    space = 50;
+end
+
+if nargin < 4
     ti = 1;
     N = 51;
 
@@ -31,29 +34,43 @@ end
 T_range = [ti tf];
 
 %% solve master equation
-[T, P] = ode45(@(t,P) odefunc(t,P,N,q), T_range, P_init, []);
+[T, P] = ode45(@(t,P) odefunc(t,P,N,q,space), T_range, P_init, []);
 
 % calculate mean number evacuated
 mean_evac = P*(0:(N-1))';
 toc;
 
 %% the master equation
-function dP=odefunc(t,P,N,q)
+function dP=odefunc(t,P,N,q,space)
 % initialize generator matrix
 A = zeros(N,N); 
 
-for n = 0:N-1
-    for i = 0:N-1
-        if i < n % can only transition from states of fewer to greater (or equal) evacuated
-            qq = q(floor(t)); % round time down to nearest time step, since P_hit changes in discrete increments
-            A(n+1,i+1)=nchoosek(N-i,n-i)*qq^(n-i)*(1-qq)^(N-n); % calculate transition rate
+if space == 50
+    for n = 0:N-1
+        for i = 0:N-1
+            if i < n % can only transition from states of fewer to greater (or equal) evacuated
+                qq = q(floor(t)); % round time down to nearest time step, since P_hit changes in discrete increments
+                A(n+1,i+1)=nchoosek(N-i,n-i)*qq^(n-i)*(1-qq)^(N-n); % calculate transition rate
+            end
         end
     end
+    for i = 1:N
+        A(i,i) = -sum(A(:,i)); % diagonal elements are negative sums of each column
+    end
+else
+    for n = 0:space
+        for i = 0:space
+            if i < n
+                qq = q(floor(t));
+                A(n+1,i+1)=nchoosek(N-i,n-i)*qq^(n-i)*(1-qq)^(N-n);
+            end
+        end
+    end
+    for i = 1:N
+        A(i,i) = -sum(A(:,i)); % diagonal elements are negative sums of each column
+    end
 end
-for i = 1:N
-    A(i,i) = -sum(A(:,i)); % diagonal elements are negative sums of each column
-end
- 
+
 dP=A*P;
 end
 
