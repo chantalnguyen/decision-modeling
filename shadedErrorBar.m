@@ -114,7 +114,7 @@ H.mainLine=plot(x,y,lineProps{:});
 if specColor
     col=get(H.mainLine,'color');
     edgeColor=col+(1-col)*0.55;
-    patchSaturation=0.15; %How de-saturated or transparent to make patch
+    patchSaturation=0.08; %How de-saturated or transparent to make patch
 else
     col=[0.8 0.35 1];
     edgeColor=col+(1-col)*0.55;

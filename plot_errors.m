@@ -11,44 +11,48 @@ res50 = P_Ind50 - evac50;
 res25 = P_Ind25 - evac25;
 
 % Plot Ind50 errors
-figure()
+figure('position',[0 0 1200 800])
+subplot(2,2,1)
 plot(1:60,zeros(60,1),'color','k') % x-axis
 hold on
 for i = 1:16
     plot(1:60,res50(:,i)/50,'LineStyle',':','color',[1 0 0 0.4])
     hold on
 end
-
-% Plot Ind25 errors
-for i = 1:13
-    plot(1:60,res25(:,i)/25,'LineStyle',':','color',[0 1 0 0.4])
-    hold on
-end
-
-sh25 = shadedErrorBar(1:60,nanmean(res25,2)/25,nanstd(res25,0,2)/25,{'color','g'},1,1);
 sh50 = shadedErrorBar(1:60,mean(res50,2)/50,std(res50,0,2)/50,{'color','r'},1,1);
-set(sh25.edge(1),'visible','off')
-set(sh25.edge(2),'visible','off')
-set(sh50.edge(1),'visible','off')
-set(sh50.edge(2),'visible','off')
-
-r25 = plot(1:60,nanmean(res25,2)/25,'color','g','LineWidth',4);
+set(sh50.edge(1),'visible','off'); set(sh50.edge(2),'visible','off');
 r50 = plot(1:60,mean(res50,2)/50,'color','r','LineWidth',4);
 xlabel('time','FontSize',14)
 ylabel('error','FontSize',14)
+set(gca,'fontsize',14)
 xlim([1 60])
 ylim([-1 1])
-legend([r50 r25],{'Ind50','Ind25'},'location','best')
-title('number evacuated error, individual trials','FontSize',18)
-% savefig('figures/evac_error')
-% print('figures/evac_error','-dpng','-r300')
-%%
-figure()
+title('number evacuated error, Ind50 trials','FontSize',14)
+
+% Plot Ind25 errors
+subplot(2,2,2)
+plot(1:60,zeros(60,1),'color','k') % x-axis
+hold on
+for i = 1:13
+    plot(1:60,res25(:,i)/25,'LineStyle',':','color',[0 0.8 0 0.6])
+    hold on
+end
+sh25 = shadedErrorBar(1:60,nanmean(res25,2)/25,nanstd(res25,0,2)/25,{'color','g'},1,1);
+set(sh25.edge(1),'visible','off'); set(sh25.edge(2),'visible','off');
+r25 = plot(1:60,nanmean(res25,2)/25,'color','g','LineWidth',4);
+xlabel('time','FontSize',14)
+ylabel('error','FontSize',14)
+set(gca,'fontsize',14)
+xlim([1 60])
+ylim([-1 1])
+title('number evacuated error, Ind25 trials','FontSize',14)
+
+subplot(2,2,3)
 load data/mle_Ind50 rP_hits
-h = bar(res50(end,:));
+bar(res50(end,:));
 xlabel('trial','fontsize',14)
 ylabel('final number evacuated error','fontsize',14)
-ybuff=.9;
+ybuff=1.5;
 XDATA=get(get(gca,'Children'),'XData');
 YDATA=get(get(gca,'Children'),'YData');
 for j=1:size(XDATA,2)
@@ -63,20 +67,20 @@ for j=1:size(XDATA,2)
     else
         t = 'miss';
     end
-    text(x,y,t,'Color','k','HorizontalAlignment','center')
-    ylim([-20 30])
-    xlim([0.5 16.5])
+    text(x,y,t,'Color','k','HorizontalAlignment','center','fontsize',11)
 end
-title('final evacuation error, Ind50 trials', 'fontsize',16)
-% savefig('figures/finalerror_50')
-% print('figures/finalerror_50','-dpng','-r300')
-%%
-figure()
+xlim([0.25 16.75])
+ylim([-20 30])
+set(gca,'xtick',2:2:16)
+set(gca,'fontsize',14)
+title('final evacuation error, Ind50 trials', 'fontsize',14)
+
+subplot(2,2,4)
 load data/mle_Ind25 rP_hits
-h = bar(res25(end,:),'m');
+bar(res25(end,:),'m');
 xlabel('trial','fontsize',14)
 ylabel('final number evacuated error','fontsize',14)
-ybuff=1.2;
+ybuff=1.5;
 XDATA=get(get(gca,'Children'),'XData');
 YDATA=get(get(gca,'Children'),'YData');
 for j=1:size(XDATA,2)
@@ -91,13 +95,13 @@ for j=1:size(XDATA,2)
     else
         t = 'miss';
     end
-    text(x,y,t,'Color','k','HorizontalAlignment','center')
-    ylim([-30 30])
-    xlim([0.5 13.5])
+    text(x,y,t,'Color','k','HorizontalAlignment','center','fontsize',11)
 end
-title('final evacuation error, Ind25 trials', 'fontsize',16)
-% savefig('figures/finalerror_25')
-% print('figures/finalerror_25','-dpng','-r300')
+xlim([0.25 13.75])
+ylim([-30 30])
+set(gca,'fontsize',14)
+title('final evacuation error, Ind25 trials', 'fontsize',14)
+tightfig;
 %%
 load data/mle_Ind50 rP_hits
 figure()
