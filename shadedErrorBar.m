@@ -1,4 +1,4 @@
-function varargout=shadedErrorBar(x,y,errBar,lineProps,transparent)
+function varargout=shadedErrorBar(x,y,errBar,lineProps,transparent,specColor)
 % function H=shadedErrorBar(x,y,errBar,lineProps,transparent)
 %
 % Purpose 
@@ -19,11 +19,13 @@ function varargout=shadedErrorBar(x,y,errBar,lineProps,transparent)
 % lineProps - [optional,'-k' by default] defines the properties of
 %             the data line. e.g.:    
 %             'or-', or {'-or','markerfacecolor',[1,0.2,0.2]}
-% transparent - [optional, 0 by default] if ==1 the shaded error
+% transparent - [optional, 0 by default] if == 1 the shaded error
 %               bar is made transparent, which forces the renderer
 %               to be openGl. However, if this is saved as .eps the
 %               resulting file will contain a raster not a vector
 %               image. 
+% specColor - [optional, 0 by default] if == 1 then the shaded error bar is
+%               the same color as the line, otherwise it is [0.8 0.35 1]
 %
 % Outputs
 % H - a structure of handles to the generated plot objects.     
@@ -50,8 +52,9 @@ function varargout=shadedErrorBar(x,y,errBar,lineProps,transparent)
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 % Error checking    
-narginchk(3,5)
+narginchk(3,6)
 
+if nargin < 6; specColor = 0; end
 
 %Process y using function handles if needed to make the error bar
 %dynamically
@@ -108,12 +111,16 @@ H.mainLine=plot(x,y,lineProps{:});
 % overlaying lines. There we have the option of choosing alpha or a
 % de-saturated solid colour for the patch surface .
 
-col=[0.8 0.35 1];
-% col = [138,43,226]/255;
-% col = [0 191 255]/255;
-edgeColor=col+(1-col)*0.55;
-edgeColor = horzcat(edgeColor,0.4);
-patchSaturation=0.11;%0.15; %How de-saturated or transparent to make patch
+if specColor
+    col=get(H.mainLine,'color');
+    edgeColor=col+(1-col)*0.55;
+    patchSaturation=0.15; %How de-saturated or transparent to make patch
+else
+    col=[0.8 0.35 1];
+    edgeColor=col+(1-col)*0.55;
+    edgeColor = horzcat(edgeColor,0.4);
+    patchSaturation=0.11; %How de-saturated or transparent to make patch
+end
 if transparent
     faceAlpha=patchSaturation;
     patchColor=col;
