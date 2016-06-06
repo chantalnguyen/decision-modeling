@@ -156,22 +156,22 @@ for i = 1:size(rP_hits,2)
     endTimes(i) = find(rP_hits(:,i)==rP_hits(end,i),1,'first');
 end
 
-P_LOO_power = zeros(60,length(z)); % mean cumulative evacuations for each trial
-Probs_LOO_power = cell(length(z),1); % full probability distributions for each trial
-mProbs_LOO_power = cell(length(z),1); % (raw) mean cumulative evacuations for each trial
-stdevs_LOO_power = cell(length(z),1); % standard deviation of mean cumulative evacuations
-T_LOO_power = cell(length(z),1); % ODE time steps for each trial
+P_LOO_Ind25 = zeros(60,length(z)); % mean cumulative evacuations for each trial
+Probs_LOO_Ind25 = cell(length(z),1); % full probability distributions for each trial
+mProbs_LOO_Ind25 = cell(length(z),1); % (raw) mean cumulative evacuations for each trial
+stdevs_LOO_Ind25 = cell(length(z),1); % standard deviation of mean cumulative evacuations
+T_LOO_Ind25 = cell(length(z),1); % ODE time steps for each trial
 for i = 1:length(z)
     [Ptest,Ttest,PPtest] = mastereq(power25model(rP_hits(:,i),space,theta_cv(:,i)),endTimes(i),space);
-    mProbs_LOO_power{i} = Ptest;
-    T_LOO_power{i} = Ttest;
+    mProbs_LOO_Ind25{i} = Ptest;
+    T_LOO_Ind25{i} = Ttest;
     temp = interp1(Ttest,Ptest,1:1:endTimes(i));
     temp(endTimes(i)+1:60)=temp(end);    
-    P_LOO_power(:,i) = temp;
-    Probs_LOO_power{i} = PPtest;
-    stdevs_LOO_power{i} = zeros(size(Ttest));
+    P_LOO_Ind25(:,i) = temp;
+    Probs_LOO_Ind25{i} = PPtest;
+    stdevs_LOO_Ind25{i} = zeros(size(Ttest));
     for j = 1:length(Ttest)
-        stdevs_LOO_power{i}(j) = sqrt(((0:50)-Ptest(j)).^2*(PPtest(j,:)'));
+        stdevs_LOO_Ind25{i}(j) = sqrt(((0:50)-Ptest(j)).^2*(PPtest(j,:)'));
     end
 end
 
@@ -181,7 +181,7 @@ rss_cv = zeros(16,1);
 % rss_cv_model = zeros(16,1);
 for i = 1:length(z)
     for j = 1:endTimes(i)
-        rss_cv(i) = rss_cv(i) + (P_LOO_power(j,i)-evac(j,i))^2;
+        rss_cv(i) = rss_cv(i) + (P_LOO_Ind25(j,i)-evac(j,i))^2;
 %         rss_cv_model(i)=rss_cv_model(i)+(P_LOO_power(j,i)-P_power(j,i))^2;
     end
     rss_cv(i)=rss_cv(i)/endTimes(i);

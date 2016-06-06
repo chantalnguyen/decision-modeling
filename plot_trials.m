@@ -75,7 +75,7 @@ for i = firstPlots
     title(['Trial ' trial_type '-' num2str(i)],'FontSize',14)
 end
 
-% plot bottom left plot
+% plot bottom right plot
 lP = length(z);
 subplot(numrows,4,lastPlot)
     hold on
@@ -94,11 +94,11 @@ subplot(numrows,4,lastPlot)
     ax(1).YLim = [0 50]; ax(2).YLim = [0 1];
     ax(1).XLim = [1 endTimes(lP)]; ax(2).XLim = [1 endTimes(lP)];
     ax(1).FontSize = 13; ax(2).FontSize = 13;
-    ax(2).YLabel.FontSize=18; ax(2).YLabel.String = 'likelihood';
-    xlabel('time','FontSize',18)
-    ylabel('evacuations','FontSize',18)
+    ax(2).YLabel.FontSize=18; ax(2).YLabel.String = 'Likelihood';
+    xlabel('Time step','FontSize',18)
+    ylabel('Evacuations','FontSize',18)
     title(['Trial ' trial_type '-' num2str(lP)],'FontSize',14)
-    legend([evac_obs, confinterval.mainLine,confinterval.edge(1),crossval,phits],{'   data','   model average','   99.7% confidence','   LOOCV','   P_{hit}'},'location','northwest','fontsize',17)
+    legend([evac_obs, confinterval.mainLine,confinterval.edge(1),crossval,phits],{'   Data','   Model average','   99.7% confidence','   LOOCV','   P_{hit}'},'location','northwest','fontsize',17)
    
 % plot remaining plots
 if length(z) == 10 || length(z) == 14
@@ -188,18 +188,19 @@ end
 
 
 set(gcf,'units','pixels')
-set(gcf,'position',[0 0 1200 800])
+set(gcf,'position',[0 0 1300 800])
 tightfig;
 pos=get(gcf,'position');
 set(gcf,'position',[pos(1:3) 800])
 tightfig;
-set(gcf,'units','centimeters')
-set(gcf,'position',[pos(1:2) 40 28])
-set(gcf,'papersize',[40 28])
+% set(gcf,'units','centimeters')
+% set(gcf,'position',[pos(1:2) 40 28])
+% set(gcf,'papersize',[40 28])
 
 if saveFig
     savefig(['figures/' trial_type])
     print(['figures/' trial_type],'-dpdf','-r300')
+    print(['figures/' trial_type],'-dsvg','-r300')
 end
 
 

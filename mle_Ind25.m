@@ -1,4 +1,4 @@
-% Determine parameters of power-law decision model for Ind25 games with
+  % Determine parameters of power-law decision model for Ind25 games with
 % maximum likelihood estimation, and solve master equation for each trial
 % To calculate H, count P_hits seen until shelter is full
 % Decision model is dependent on P_hit and initial shelter capacity (25)
