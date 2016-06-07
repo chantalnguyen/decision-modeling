@@ -40,6 +40,13 @@ for i = 1:length(z)
     evacPhits(:,i) = evacuateProb(:,z(i));
 end
 
+% round evacuateProb values down to nearest tenth
+evacPhits2 = 10.^floor(log10(abs(evacPhits)));
+evacPhits2 = floor(evacPhits./evacPhits2).*evacPhits2;
+evacPhits2(isnan(evacPhits2))=0;
+evacPhits = round(evacPhits2,1);
+clear evacPhits2;
+
 P_hit_range=0:0.1:1;
 
 % Number of times participants at home observe P_hit values
