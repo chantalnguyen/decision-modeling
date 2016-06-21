@@ -74,7 +74,6 @@ for i = 1:length(z) % iterate over all trials
 end
 
 Theta = J'./H';
-
 %% Plot H
 figure()
 h = pcolor(-0.1:0.1:1,1:length(z)+1,padarray(H,[1 1],mean(mean(H)),'post'));
@@ -118,7 +117,7 @@ set(gca,'fontsize',16)
 set(gca,'xtick',0:0.1:1)
 set(gca,'ticklength',[0 0])
 xlabel('Disaster likelihood (P_{hit})','fontsize',18)
-ylabel('Evacuations','fontsize',18)
+ylabel('Evacuation rate','fontsize',18)
 title('Empirical evacuation rate J/H, Ind50 trials', 'fontsize',18)
 colormap(jet(length(z)));
 legs = cell(length(z),1);
@@ -128,3 +127,23 @@ end
 legend(legs,'location','northwest','fontsize',14)
 savefig('figures/Ind50_JH')
 print('figures/Ind50_JH','-dsvg','-r300')
+%% Plot cumulative J/H
+cTheta = nanmean(Theta,2);
+cTheta = cumsum(cTheta)/max(cumsum(cTheta));
+cJ = sum(J);
+cJ = cumsum(cJ)/max(cumsum(cJ));
+Theta2 = (J+1)'./(H+2)'; % actual mean
+cTheta2 = nanmean(Theta2,2);
+cTheta2 = cumsum(cTheta2)/max(cumsum(cTheta2));
+figure()
+plot(0:0.1:1,cTheta,'linewidth',2); hold on;
+% plot(0:0.1:1,cJ,'linewidth',2) 
+plot(0:0.1:1,0.8824*(0:0.1:1).^5.4053,'linewidth',2)
+plot(0:0.1:1,0.0394*(0:0.1:1).^0.8062,'linewidth',2)
+% plot(0:0.1:1,cTheta2,'linestyle','--')
+set(gca,'fontsize',16)
+xlabel('Disaster likelihood (P_{hit})','fontsize',18)
+% ylabel('Cumulative evacuation rate','fontsize',18)
+title('Cumulative evacuation rate, Ind50 trials','fontsize',18)
+legend({'Cumulative evacuation rate','Decision model'},'Location','NorthWest')
+

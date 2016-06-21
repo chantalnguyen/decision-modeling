@@ -24,6 +24,7 @@ round_P_hits = round(round_P_hits,1);
 
 evacuateTime(evacuateTime == 0) = 1; % evacuating at 0 = evacuating at 1
 
+P_hits = zeros(60,length(z)); % unrounded P_hit trajectories for each trial
 rP_hits = zeros(60,length(z)); % rounded P_hit trajectories for each trial
 evac = rP_hits; % empirical cumulative evacuations for each trial
 evacTimes = zeros(50,length(z)); % times of evacuation decisions for each trial
@@ -31,6 +32,7 @@ evacPhits = evacTimes; % P_hits of evacuation decisions for each trial
 
 % this is our data set
 for i = 1:length(z)
+    P_hits(:,i) = gameinfo(z(i),:);
     rP_hits(:,i) = round_P_hits(z(i),:);
     evac(:,i) = evapeocumu(z(i),:); 
     evacTimes(:,i) = evacuateTime(:,z(i));
@@ -47,6 +49,7 @@ clear evacPhits2;
 eTimes = zeros(50,length(z)-1,length(z));
 ePhits = eTimes;
 looPhits = zeros(60,length(z)-1,length(z));
+actualPhits = looPhits;
 
 eTimes(:,:,1) = evacTimes(:,2:end);
 ePhits(:,:,1) = evacPhits(:,2:end);
@@ -54,11 +57,14 @@ eTimes(:,:,end) = evacTimes(:,1:end-1);
 ePhits(:,:,end) = evacPhits(:,1:end-1);
 looPhits(:,:,1) = rP_hits(:,2:end);
 looPhits(:,:,end) = rP_hits(:,1:end-1);
+actualPhits(:,:,1) = P_hits(:,2:end);
+actualPhits(:,:,end) = P_hits(:,1:end-1);
 
 for i = 2:length(z)
     eTimes(:,:,i) = horzcat(evacTimes(:,1:i-1),evacTimes(:,i+1:end));
     ePhits(:,:,i) = horzcat(evacPhits(:,1:i-1),evacPhits(:,i+1:end));
     looPhits(:,:,i) = horzcat(rP_hits(:,1:i-1),rP_hits(:,i+1:end));
+    actualPhits(:,:,i) = horzcat(P_hits(:,1:i-1),P_hits(:,i+1:end));
 end
 
 P_hit_range=0:0.1:1;
@@ -80,7 +86,7 @@ for n = 1:length(z)
             indvEvacTime = eTimes(i,j,n); % this is the time the individual (i) evacuated in trial (j)
             if indvEvacTime == -1 % no decision; ALL P_hits seen until end of trial (P_hit = 1 or 0)
                 assert(looPhits(end,j,n) == 0 || looPhits(end,j,n) == 1);
-                h1 = histcounts(looPhits(1:find(looPhits(:,j,n)==looPhits(end,j,n),1,'first'),j,n),bins);
+                h1 = histcounts(looPhits(1:find(actualPhits(:,j,n)==actualPhits(end,j,n),1,'first'),j,n),bins);
             else
                 assert(looPhits(indvEvacTime,j,n)==ePhits(i,j,n));
                 h1 = histcounts(looPhits(1:indvEvacTime,j,n),bins);
@@ -101,7 +107,7 @@ for i = 1:50 % iterate through each individual
         indvEvacTime = evacTimes(i,j); % this is the time the individual (i) evacuated in trial (j)
         if indvEvacTime == -1 % no decision; ALL P_hits seen until end of trial (P_hit = 1 or 0)
             assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
-            h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins);
+            h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
         else
             assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
             h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
@@ -142,9 +148,10 @@ for i = 1:length(z)
 end
 %%
 
+% calculate endtimes of each trial
 endTimes = zeros(size(rP_hits,2),1);
 for i = 1:size(rP_hits,2)
-    endTimes(i) = find(rP_hits(:,i)==rP_hits(end,i),1,'first');
+    endTimes(i) = find(gameinfo(z(i),:)==gameinfo(z(i),end),1,'first'); % use unrounded values
 end
 
 P_LOO_Ind50 = zeros(60,length(z)); % mean cumulative evacuations for each trial

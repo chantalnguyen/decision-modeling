@@ -61,7 +61,7 @@ for i = 1:50 % iterate through each individual
         if indvEvacTime == -1 % no decision; ALL rP_hits seen until when shelter is full NOT end of trial (P_hit = 1 or 0) 
                 assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
             if evac(end,j) < space % if shelter did not fill, count all rP_hits seen
-                h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins); 
+                h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
             else % if shelter fills up, count rP_hits seen until shelter is full
                  % honestly, this would cause a discrepancy if
                  % participants decide when the shelter is already
@@ -113,8 +113,9 @@ std_theta = std(bootstat);
 % calculate endtimes of each trial
 endTimes = zeros(size(rP_hits,2),1);
 for i = 1:size(rP_hits,2)
-    endTimes(i) = find(rP_hits(:,i)==rP_hits(end,i),1,'first');
+    endTimes(i) = find(gameinfo(z(i),:)==gameinfo(z(i),end),1,'first'); % use unrounded values
 end
+
 
 P_Ind25 = zeros(60,length(z)); % mean cumulative evacuations for each trial
 Probs_Ind25 = cell(length(z),1); % full probability distributions for each trial

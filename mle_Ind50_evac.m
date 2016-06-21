@@ -112,7 +112,7 @@ power_model = @(Ph,theta_p) theta_p(1)*Ph.^theta_p(2);
 % calculate endtimes of each trial
 endTimes = zeros(size(rP_hits,2),1);
 for i = 1:size(rP_hits,2)
-    endTimes(i) = find(rP_hits(:,i)==rP_hits(end,i),1,'first');
+    endTimes(i) = find(gameinfo(z(i),:)==gameinfo(z(i),end),1,'first'); % use unrounded values
 end
 
 P_Ind50_evac = zeros(60,length(z)); % mean cumulative evacuations for each trial

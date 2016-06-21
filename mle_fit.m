@@ -65,7 +65,9 @@ if space == 50
             indvEvacTime = evacTimes(i,j); % this is the time the individual (i) evacuated in trial (j)
             if indvEvacTime == -1 % no decision; ALL rP_hits seen until end of trial (P_hit = 1 or 0)
 %                 assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
-                h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins);
+%                 h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins);
+                h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
+
             else % decision; count P_hits seen until time of decision
 %                 assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
                 h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
@@ -80,7 +82,8 @@ else
             if indvEvacTime == -1 % no decision; ALL rP_hits seen until when shelter is full NOT end of trial (P_hit = 1 or 0) 
 %                 assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
                 if evac(end,j) < space % if shelter did not fill, count all rP_hits seen
-                    h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins); 
+%                     h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins); 
+                    h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
                 else % if shelter fills up, count rP_hits seen until shelter is full
                      % honestly, this would cause a discrepancy if
                      % participants decide when the shelter is already

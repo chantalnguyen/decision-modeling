@@ -60,7 +60,8 @@ for i = 1:50 % iterate through each individual
         indvEvacTime = evacTimes(i,j); % this is the time the individual (i) evacuated in trial (j)
         if indvEvacTime == -1 % no decision; ALL rP_hits seen until end of trial (P_hit = 1 or 0)
             assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
-            h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins);
+            h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
+%             h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins);
         else % decision; count P_hits seen until time of decision
             assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
             h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
@@ -91,20 +92,23 @@ power_model = @(Ph,theta_i) theta_i(1)*Ph.^theta_i(2);
 std_theta = std(bootstat);
 
 % plot decision model
-% figure()
+% figure('position',[0 0 375 281.25])
 % Phits = 0:0.01:1;
-% plot(Phits,power_model(Phits,theta_power),'LineWidth',3);
-% xlabel('P_{hit}','FontSize',16)
-% ylabel('probability of evacuation q(P_{hit})','FontSize',16)
-% title('decision model for individual games','FontSize',18)
+% plot(Phits,power_model(Phits,theta),'LineWidth',3);
+% xlabel('Disaster likelihood, P_{hit}','FontSize',12)
+% ylabel('Probability of evacuation, q(P_{hit})','FontSize',12)
+% title('Decision model for Ind50 trials','FontSize',12)
 % set(gca,'FontSize',12);
+% set(gca,'xtick',0:0.1:1);
+% leg = legend(['  a = ' num2str(theta(1)) ', b = ' num2str(theta(2))],'location','northwest');
+% set(leg,'fontsize',12);
 
 %% solve master equation
 
 % calculate endtimes of each trial
 endTimes = zeros(size(rP_hits,2),1);
 for i = 1:size(rP_hits,2)
-    endTimes(i) = find(rP_hits(:,i)==rP_hits(end,i),1,'first');
+    endTimes(i) = find(gameinfo(z(i),:)==gameinfo(z(i),end),1,'first'); % use unrounded values
 end
 
 P_Ind50 = zeros(60,length(z)); % mean cumulative evacuations for each trial

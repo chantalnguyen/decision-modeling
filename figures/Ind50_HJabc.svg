@@ -23,7 +23,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -41,8 +41,8 @@
      id="namedview769"
      showgrid="false"
      inkscape:zoom="0.94"
-     inkscape:cx="208"
-     inkscape:cy="1203.1167"
+     inkscape:cx="75.021277"
+     inkscape:cy="352.05287"
      inkscape:window-x="410"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -5040,11 +5040,11 @@
            style="font-size:18px;font-family:Helvetica;color-interpolation:linearRGB;fill:#262626;stroke:#262626;color-rendering:optimizeQuality;image-rendering:optimizeQuality;text-rendering:geometricPrecision"
            id="g1795">
           <text
-             x="-49.5"
+             x="-62.987015"
              xml:space="preserve"
              y="-5"
              style="stroke:none"
-             id="text1797">Evacuations</text>
+             id="text1797">Evacuation rate</text>
         </g>
         <g
            style="color-interpolation:linearRGB;fill:#262626;stroke:#262626;color-rendering:optimizeQuality;image-rendering:optimizeQuality;text-rendering:geometricPrecision"
