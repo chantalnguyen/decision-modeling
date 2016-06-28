@@ -25,18 +25,13 @@ round_P_hits = round(round_P_hits,1);
 
 evacuateTime(evacuateTime == 0) = 1; % evacuating at 0 = evacuating at 1
 
-rP_hits = zeros(60,length(z)); % rounded P_hit trajectories for each trial
-evac = rP_hits; % empirical cumulative evacuations for each trial
-evacTimes = zeros(50,length(z)); % times of evacuation decisions for each trial
-evacPhits = evacTimes; % P_hits of evacuation decisions for each trial
-
 % this is our data set
-for i = 1:length(z)
-    rP_hits(:,i) = round_P_hits(z(i),:);
-    evac(:,i) = evapeocumu(z(i),:); 
-    evacTimes(:,i) = evacuateTime(:,z(i));
-    evacPhits(:,i) = evacuateProb(:,z(i));
-end
+rP_hits = round_P_hits(z,:); % rounded P_hit trajectories for each trial
+rP_hits = rP_hits'; 
+evac = evapeocumu(z,:); % empirical cumulative evacuations for each trial
+evac = evac';
+evacTimes = evacuateTime(:,z); % times of evacuation decisions for each trial
+evacPhits = evacuateProb(:,z); % P_hits of evacuation decisions for each trial
 
 % round evacuateProb values down to nearest tenth
 evacPhits2 = 10.^floor(log10(abs(evacPhits)));
@@ -144,4 +139,33 @@ rmse_Ind50 = sqrt(mse_Ind50);
 % save workspace
 clear bins temp i j
 save('data/mle_Ind50.mat')
+
+%% fit trials sequentially in groups
+% thetas = zeros(10,2);
+% z = [19,28,29,49,64,67,76,102,108,112,113,123,125,130,143,144];
+% load evacuate_data
+% for i = 1:length(thetas)
+%     theta = mle_fit(z(i:i+5),gameinfo,evapeocumu,evacuateTime,evacuateProb);
+%     thetas(i,:) = theta;
+% end
+% %%
+% power_model = @(Ph,theta_i) theta_i(1)*Ph.^theta_i(2);
+% % plot decision model
+% colors = flipud(jet(length(thetas)));
+% legs = cell(length(thetas),1);
+% figure('position',[0 0 375 281.25])
+% for i = 1:length(thetas)
+%     Phits = 0:0.01:1;
+%     plot(Phits,power_model(Phits,thetas(i,:)),'LineWidth',2,'color',colors(i,:));
+%     hold on
+%     xlabel('Disaster likelihood, P_{hit}','FontSize',12)
+%     ylabel('Probability of evacuation, q(P_{hit})','FontSize',12)
+%     title('Decision model for Ind25 trials','FontSize',12)
+%     set(gca,'FontSize',12);
+%     set(gca,'xtick',0:0.1:1);
+%     legs{i} = ['  a = ' num2str(thetas(i,1)) ', b = ' num2str(thetas(i,2))];
+% end
+% leg=legend(legs,'location','northwest');
+% set(leg,'fontsize',12);
+
     

@@ -15,8 +15,8 @@
 % This function requires the functions 'tightfig' and 'shadedErrorBar'
 % This really only works if there are between 10 and 17 trials
 
-function plot_trials(input_data,input_cv,trial_type,saveFig)
-if nargin < 4
+function plot_opt_trials(input_data,input_bayes,input_stat,trial_type,saveFig)
+if nargin < 5
     saveFig = 0;
 end
 
@@ -24,11 +24,12 @@ end
 load(input_data);
 
 temp = who('T_*');      Times = eval(temp{1});
-temp = who('mProbs_*'); meanProbs = eval(temp{1});
-temp = who('stdevs*');  stdevs = eval(temp{1});
+temp = who('mProbs_Ind50'); meanProbs = eval(temp{1});
 
-load(input_cv);
-temp = who('P_LOO*');   P_cv = eval(temp{1});
+load(input_bayes);
+load(input_stat);
+temp = who('P_bayes*'); P_bayes = eval(temp{1});
+temp = who('P_stat*');  P_stat = eval(temp{1});
 temp = who('rP_hits');  rP_hits = eval(temp{1});
 temp = who('z');        z = eval(temp{1});
 temp = who('endTimes'); endTimes = eval(temp{1});
@@ -60,12 +61,11 @@ for i = firstPlots
     hold on
     area(1:60,evac(:,i),'FaceColor',[192/255 192/255 192/255]);
     set(gca,'Layer','top')    
-    confinterval=shadedErrorBar(Times{i},meanProbs{i},3*stdevs{i},{'color','k','LineWidth',5,'LineStyle',':'},1);
-    set(confinterval.edge(1),'visible','off')
-    set(confinterval.edge(2),'visible','off')
-    [ax,crossval,phits]=plotyy(1:60,P_cv(:,i),1:60,rP_hits(:,i));
+    plot(Times{i},meanProbs{i},'color','k','LineWidth',5,'LineStyle',':');
+    plot(1:60,P_stat(:,i),'Linewidth',5,'color',[1 .5 0]);
+    [ax,bayes,phits]=plotyy(1:60,P_bayes(:,i),1:60,rP_hits(:,i));
     set(phits,'color',[0 1 0]); set(phits,'LineWidth',1); set(phits,'LineStyle','-');
-    set(crossval,'color',[0 1 1 0.4]); set(crossval,'LineWidth',5);
+    set(bayes,'color',[0 1 1 0.4]); set(bayes,'LineWidth',5);
     set(ax(1),'box','on')
     set(ax(2),'YColor','g')
     ax(1).YTick = 0:10:50; ax(2).YTick = 0:0.2:1;
@@ -82,12 +82,11 @@ subplot(numrows,4,lastPlot)
     hold on
     evac_obs = area(1:60,evac(:,lP),'FaceColor',[192/255 192/255 192/255]);
     set(gca,'Layer','top')
-    confinterval=shadedErrorBar(Times{lP},meanProbs{lP},3*stdevs{lP},{'color','k','LineWidth',5,'LineStyle',':'},1);
-    set(confinterval.edge(1),'visible','off')
-    set(confinterval.edge(2),'visible','off')
-    [ax,crossval,phits]=plotyy(1:60,P_cv(:,lP),1:60,rP_hits(:,lP));
+    model = plot(Times{i},meanProbs{i},'color','k','LineWidth',5,'LineStyle',':'); 
+    statopt = plot(1:60,P_stat(:,i),'Linewidth',5,'color',[1 .5 0]);
+    [ax,bayes,phits]=plotyy(1:60,P_bayes(:,lP),1:60,rP_hits(:,lP));
     set(phits,'color',[0 1 0]); set(phits,'LineWidth',1); set(phits,'LineStyle','-');
-    set(crossval,'color',[0 1 1 0.4]); set(crossval,'LineWidth',5);
+    set(bayes,'color',[0 1 1 0.4]); set(bayes,'LineWidth',5);
     set(ax(1),'box','on')
     set(ax(2),'YColor','g')
     ax(1).YTick = 0:10:50; ax(2).YTick = 0:0.2:1;
@@ -99,7 +98,7 @@ subplot(numrows,4,lastPlot)
     xlabel('Time step','FontSize',18)
     ylabel('Evacuations','FontSize',18)
     title(['Trial ' trial_type '-' num2str(lP)],'FontSize',14)
-    legend([evac_obs, confinterval.mainLine,confinterval.edge(1),crossval,phits],{'   Data','   Model average','   99.7% confidence','   LOOCV','   P_{hit}'},'location','northwest','fontsize',17)
+    legend([evac_obs, model,bayes,statopt,phits],{'   Data','   Model average','   Bayesian optimal','   Static optimal','   P_{hit}'},'location','northwest','fontsize',17)
    
 % plot remaining plots
 if length(z) == 10 || length(z) == 14
@@ -108,12 +107,11 @@ if length(z) == 10 || length(z) == 14
     hold on
     area(1:60,evac(:,plotInd),'FaceColor',[192/255 192/255 192/255]);
     set(gca,'Layer','top')    
-    confinterval=shadedErrorBar(Times{plotInd},meanProbs{plotInd},3*stdevs{plotInd},{'color','k','LineWidth',5,'LineStyle',':'},1);
-    set(confinterval.edge(1),'visible','off')
-    set(confinterval.edge(2),'visible','off')
-    [ax,crossval,phits]=plotyy(1:60,P_cv(:,plotInd),1:60,rP_hits(:,plotInd));
+    plot(Times{plotInd},meanProbs{plotInd},'color','k','LineWidth',5,'LineStyle',':');
+    plot(1:60,P_stat(:,plotInd),'Linewidth',5,'color',[1 .5 0]);    
+    [ax,bayes,phits]=plotyy(1:60,P_bayes(:,plotInd),1:60,rP_hits(:,plotInd));
     set(phits,'color',[0 1 0]); set(phits,'LineWidth',1); set(phits,'LineStyle','-');
-    set(crossval,'color',[0 1 1 0.4]); set(crossval,'LineWidth',5);
+    set(bayes,'color',[0 1 1 0.4]); set(bayes,'LineWidth',5);
     set(ax(1),'box','on')
     set(ax(2),'YColor','g')
     ax(1).YTick = 0:10:50; ax(2).YTick = 0:0.2:1;
@@ -128,12 +126,11 @@ else
         hold on
         area(1:60,evac(:,j),'FaceColor',[192/255 192/255 192/255]);
         set(gca,'Layer','top')    
-        confinterval=shadedErrorBar(Times{j},meanProbs{j},3*stdevs{j},{'color','k','LineWidth',5,'LineStyle',':'},1);
-        set(confinterval.edge(1),'visible','off')
-        set(confinterval.edge(2),'visible','off')
-        [ax,crossval,phits]=plotyy(1:60,P_cv(:,j),1:60,rP_hits(:,j));
+        plot(Times{j},meanProbs{j},'color','k','LineWidth',5,'LineStyle',':');
+        plot(1:60,P_stat(:,j),'Linewidth',5,'color',[1 .5 0]);
+        [ax,bayes,phits]=plotyy(1:60,P_bayes(:,j),1:60,rP_hits(:,j));
         set(phits,'color',[0 1 0]); set(phits,'LineWidth',1); set(phits,'LineStyle','-');
-        set(crossval,'color',[0 1 1 0.4]); set(crossval,'LineWidth',5);
+        set(bayes,'color',[0 1 1 0.4]); set(bayes,'LineWidth',5);
         set(ax(1),'box','on')
         set(ax(2),'YColor','g')
         ax(1).YTick = 0:10:50; ax(2).YTick = 0:0.2:1;
@@ -148,13 +145,12 @@ else
         subplot(numrows,4,plotInd+3);
         hold on
         area(1:60,evac(:,plotInd),'FaceColor',[192/255 192/255 192/255]);
-        set(gca,'Layer','top')    
-        confinterval=shadedErrorBar(Times{plotInd},meanProbs{plotInd},3*stdevs{plotInd},{'color','k','LineWidth',5,'LineStyle',':'},1);
-        set(confinterval.edge(1),'visible','off')
-        set(confinterval.edge(2),'visible','off')
-        [ax,crossval,phits]=plotyy(1:60,P_cv(:,plotInd),1:60,rP_hits(:,plotInd));
+        set(gca,'Layer','top')        
+        plot(Times{plotInd},meanProbs{plotInd},'color','k','LineWidth',5,'LineStyle',':');
+        plot(1:60,P_stat(:,plotInd),'Linewidth',5,'color',[1 .5 0]);        
+        [ax,bayes,phits]=plotyy(1:60,P_bayes(:,plotInd),1:60,rP_hits(:,plotInd));
         set(phits,'color',[0 1 0]); set(phits,'LineWidth',1); set(phits,'LineStyle','-');
-        set(crossval,'color',[0 1 1 0.4]); set(crossval,'LineWidth',5);
+        set(bayes,'color',[0 1 1 0.4]); set(bayes,'LineWidth',5);
         set(ax(1),'box','on')
         set(ax(2),'YColor','g')
         ax(1).YTick = 0:10:50; ax(2).YTick = 0:0.2:1;
@@ -168,13 +164,12 @@ else
             subplot(numrows,4,k+2);
             hold on
             area(1:60,evac(:,k),'FaceColor',[192/255 192/255 192/255]);
-            set(gca,'Layer','top')    
-            confinterval=shadedErrorBar(Times{k},meanProbs{k},3*stdevs{k},{'color','k','LineWidth',5,'LineStyle',':'},1);
-            set(confinterval.edge(1),'visible','off')
-            set(confinterval.edge(2),'visible','off')
-            [ax,crossval,phits]=plotyy(1:60,P_cv(:,k),1:60,rP_hits(:,k));
+            set(gca,'Layer','top')        
+            plot(Times{i},meanProbs{i},'color','k','LineWidth',5,'LineStyle',':');
+            plot(1:60,P_stat(:,i),'Linewidth',5,'color',[1 .5 0]);
+            [ax,bayes,phits]=plotyy(1:60,P_bayes(:,k),1:60,rP_hits(:,k));
             set(phits,'color',[0 1 0]); set(phits,'LineWidth',1); set(phits,'LineStyle','-');
-            set(crossval,'color',[0 1 1 0.4]); set(crossval,'LineWidth',5);
+            set(bayes,'color',[0 1 1 0.4]); set(bayes,'LineWidth',5);
             set(ax(1),'box','on')
             set(ax(2),'YColor','g')
             ax(1).YTick = 0:10:50; ax(2).YTick = 0:0.2:1;
@@ -199,9 +194,9 @@ tightfig;
 % set(gcf,'papersize',[40 28])
 
 if saveFig
-    savefig(['figures/' trial_type])
-    print(['figures/' trial_type],'-dpdf','-r300')
-    print(['figures/' trial_type],'-dsvg','-r300')
+    savefig(['figures/opt_' trial_type])
+    print(['figures/opt_' trial_type],'-dpdf','-r300')
+    print(['figures/opt_' trial_type],'-dsvg','-r300')
 end
 
 

@@ -150,4 +150,34 @@ rmse_Ind25 = sqrt(mse_Ind25);
 % save workspace
 clear bins temp i j
 save('data/mle_Ind25.mat')
+
+%% fit trials sequentially in groups
+% thetas = zeros(7,2);
+% z = [34 36 52 61 65 66 71 82 95 139 148 152 160];
+% space = 25;
+% load evacuate_data
+% for i = 1:length(thetas)
+%     theta = mle_fit(z(i:i+5),gameinfo,evapeocumu,evacuateTime,evacuateProb,space);
+%     thetas(i,:) = theta;
+% end
+% %%
+% power_model = @(Ph,space,theta_i) theta_i(1)*Ph.^(theta_i(2)/space);
+% % plot decision model
+% colors = flipud(jet(length(thetas)));
+% legs = cell(length(thetas),1);
+% figure('position',[0 0 375 281.25])
+% for i = 1:length(thetas)
+%     Phits = 0:0.01:1;
+%     plot(Phits,power_model(Phits,space,thetas(i,:)),'LineWidth',2,'color',colors(i,:));
+%     hold on
+%     xlabel('Disaster likelihood, P_{hit}','FontSize',12)
+%     ylabel('Probability of evacuation, q(P_{hit})','FontSize',12)
+%     title('Decision model for Ind25 trials','FontSize',12)
+%     set(gca,'FontSize',12);
+%     set(gca,'xtick',0:0.1:1);
+%     legs{i} = ['  a = ' num2str(thetas(i,1)) ', b = ' num2str(thetas(i,2))];
+% end
+% leg=legend(legs,'location','northwest');
+% set(leg,'fontsize',12);
+
     
