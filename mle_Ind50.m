@@ -83,8 +83,8 @@ options = optimoptions(@fminunc,'MaxFunEvals',10000);
 power_model = @(Ph,theta_i) theta_i(1)*Ph.^theta_i(2);
 
 % determine standard deviations from boostrapping
-[bootstat,bootsam]=bootstrp(1000,@(z)mle_fit(z,gameinfo,evapeocumu,evacuateTime,evacuateProb),z);
-std_theta = std(bootstat);
+% [bootstat,bootsam]=bootstrp(1000,@(z)mle_fit(z,gameinfo,evapeocumu,evacuateTime,evacuateProb),z);
+% std_theta = std(bootstat);
 
 % plot decision model
 % figure('position',[0 0 375 281.25])
@@ -138,7 +138,7 @@ rmse_Ind50 = sqrt(mse_Ind50);
 
 % save workspace
 clear bins temp i j
-save('data/mle_Ind50.mat')
+% save('data/mle_Ind50.mat')
 
 %% fit trials sequentially in groups
 % thetas = zeros(10,2);
