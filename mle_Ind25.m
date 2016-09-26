@@ -54,12 +54,13 @@ H = zeros(50,length(P_hit_range));
 J = zeros(50,length(P_hit_range));
 
 bins = -0.05:0.1:1.05;
+% bins = -0.05:0.1:0.75;
 
 for i = 1:50 % iterate through each individual
     for j = 1:length(z) % iterate through each trial
         indvEvacTime = evacTimes(i,j); % this is the time the individual (i) evacuated in trial (j)
         if indvEvacTime == -1 % no decision; ALL rP_hits seen until when shelter is full NOT end of trial (P_hit = 1 or 0) 
-                assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
+            assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
             if evac(end,j) < space % if shelter did not fill, count all rP_hits seen
                 h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
             else % if shelter fills up, count rP_hits seen until shelter is full
@@ -69,7 +70,7 @@ for i = 1:50 % iterate through each individual
                 h1 = histcounts(rP_hits(1:find(evac(:,j)==space,1,'first'),j),bins); 
             end
         else 
-                assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
+            assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
             h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
         end
         H(i,:) = H(i,:)+h1;
@@ -77,7 +78,7 @@ for i = 1:50 % iterate through each individual
 end
 
 
-for i = 1:50 % iterate over all individials
+for i = 1:50 % iterate over all individuals
     J(i,:) = J(i,:) + histcounts(evacPhits(i,:),bins);
 end
 
@@ -85,13 +86,14 @@ end
 H = sum(H)';
 J = sum(J)';
 
-theta_0 = [0.8; 10];
+theta_0 = [0.8; 1];
 powerfun = @(theta_i)llfun(H(2:end),J(2:end),theta_i,P_hit_range(2:end),space);
 
 options = optimoptions(@fminunc,'MaxFunEvals',10000);
 
 % minimize (negative of) log-likelihood function
-[theta,~] = fminunc(powerfun,theta_0,options);
+% [theta,~] = fminunc(powerfun,theta_0,options);
+[theta,~] = fmincon(powerfun,theta_0,[1 0; 0 0],[.88239;0],[],[],[.88239;-Inf],[Inf;Inf]);
 
 power25model = @(Ph,space,theta_i) theta_i(1)*Ph.^(theta_i(2)/space);
 
@@ -132,7 +134,7 @@ for i = 1:length(z)
     Probs_Ind25{i} = PPtest;
     stdevs_Ind25{i} = zeros(size(Ttest));
     for j = 1:length(Ttest)
-        stdevs_Ind25{i}(j) = sqrt(((0:50)-Ptest(j)).^2*(PPtest(j,:)'));
+        stdevs_Ind25{i}(j) = sqrt(((0:25)-Ptest(j)).^2*(PPtest(j,1:26)'));
     end
 end
 
@@ -147,9 +149,18 @@ end
 mse_Ind25 = mean(rss_Ind25);
 rmse_Ind25 = sqrt(mse_Ind25);
 
+for i = 1:length(z)
+    stdevs_Ind25{i} = 3*stdevs_Ind25{i};
+    temp = mProbs_Ind25{i} + stdevs_Ind25{i};
+    stdevs_Ind25{i}(:,2) = stdevs_Ind25{i};
+    stdevs_Ind25{i}(temp>25,2) = 25 - mProbs_Ind25{i}(temp>25);
+    stdevs_Ind25{i} = stdevs_Ind25{i}';
+    stdevs_Ind25{i} = [stdevs_Ind25{i}(2,:);stdevs_Ind25{i}(1,:)];
+end
+
 % save workspace
 clear bins temp i j
-save('data/mle_Ind25.mat')
+save('data/mle_Ind25_test2.mat')
 
 %% fit trials sequentially in groups
 % thetas = zeros(7,2);

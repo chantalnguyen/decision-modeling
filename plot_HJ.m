@@ -3,6 +3,7 @@
 
 % desired trial #s are 19,28,29,49,64,67,76,102,108,112,113,123,125,130,143,144
 z = [19,28,29,49,64,67,76,102,108,112,113,123,125,130,143,144];
+space = 50;
 
 % misses 28 29 64 67 113 125 130 143 144
 % hits 19 49 76 102 108 112 123
@@ -55,25 +56,60 @@ J = zeros(length(z),length(P_hit_range));
 
 bins = -0.05:0.1:1.05;
 
-for j = 1:length(z) % iterate through each trial
-    for i = 1:50 % iterate through each individual
-        indvEvacTime = evacTimes(i,j); % this is the time the individual (i) evacuated in trial (j)
-        if indvEvacTime == -1 % no decision; ALL rP_hits seen until end of trial (P_hit = 1 or 0)
-            assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
-            h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins);
-        else % decision; count P_hits seen until time of decision
-            assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
-            h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
+
+% for j = 1:length(z) % iterate through each trial
+%     for i = 1:50 % iterate through each individual
+%         indvEvacTime = evacTimes(i,j); % this is the time the individual (i) evacuated in trial (j)
+%         if indvEvacTime == -1 % no decision; ALL rP_hits seen until end of trial (P_hit = 1 or 0)
+%             assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
+%             h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
+%         else % decision; count P_hits seen until time of decision
+%             assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
+%             h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
+%         end
+%         H(j,:) = H(j,:)+h1;
+%     end
+% end
+
+if space == 50
+    for j = 1:length(z) % iterate through each trial
+        for i = 1:50 % iterate through each individual
+            indvEvacTime = evacTimes(i,j); % this is the time the individual (i) evacuated in trial (j)
+            if indvEvacTime == -1 % no decision; ALL rP_hits seen until end of trial (P_hit = 1 or 0)
+                assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
+                h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
+            else % decision; count P_hits seen until time of decision
+                assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
+                h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
+            end
+            H(j,:) = H(j,:)+h1;
         end
-        H(j,:) = H(j,:)+h1;
+    end
+else
+    for j = 1:length(z)
+        for i = 1:50
+            indvEvacTime = evacTimes(i,j);
+            if indvEvacTime == -1
+                if evac(end,j) < space
+                    h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
+                else
+                    h1 = histcounts(rP_hits(1:find(evac(:,j)==space,1,'first'),j),bins);
+                end
+            else
+                h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
+            end
+            H(j,:) = H(j,:) + h1;
+        end
     end
 end
+
 
 for i = 1:length(z) % iterate over all trials
     J(i,:) = J(i,:) + histcounts(evacPhits(:,i),bins);
 end
 
 Theta = J'./H';
+%Theta = (J'+1)./(H'+2);
 %% Plot H
 figure()
 h = pcolor(-0.1:0.1:1,1:length(z)+1,padarray(H,[1 1],mean(mean(H)),'post'));
@@ -125,8 +161,26 @@ for i = 1:length(z)
     legs{i}=['Ind50-' num2str(i)];
 end
 legend(legs,'location','northwest','fontsize',14)
-savefig('figures/Ind50_JH')
-print('figures/Ind50_JH','-dsvg','-r300')
+
+%% Plot J/H, all one color
+figure()
+h=bar(0:0.1:1,nansum(Theta'),'b');
+% set(h,'edgecolor','none');
+xlim([-0.05 1.05])
+set(gca,'fontsize',16)
+set(gca,'xtick',0:0.1:1)
+set(gca,'ticklength',[0 0])
+xlabel('Disaster likelihood (P_{hit})','fontsize',18)
+ylabel('Evacuation rate','fontsize',18)
+title('Empirical evacuation rate', 'fontsize',18)
+% colormap(jet(length(z)));
+% legs = cell(length(z),1);
+% for i = 1:length(z)
+%     legs{i}=['Ind50-' num2str(i)];
+% end
+% legend(legs,'location','northwest','fontsize',14)
+% savefig('figures/Ind50_JH')
+% print('figures/Ind50_JH','-dsvg','-r300')
 %% Plot cumulative J/H
 cTheta = nanmean(Theta,2);
 cTheta = cumsum(cTheta)/max(cumsum(cTheta));

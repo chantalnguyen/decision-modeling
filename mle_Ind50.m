@@ -56,7 +56,6 @@ for i = 1:50 % iterate through each individual
         if indvEvacTime == -1 % no decision; ALL rP_hits seen until end of trial (P_hit = 1 or 0)
             assert(rP_hits(end,j) == 0 || rP_hits(end,j) == 1);
             h1 = histcounts(rP_hits(1:find(gameinfo(z(j),:)==gameinfo(z(j),end),1,'first'),j),bins);
-%             h1 = histcounts(rP_hits(1:find(rP_hits(:,j)==rP_hits(end,j),1,'first'),j),bins);
         else % decision; count P_hits seen until time of decision
             assert(rP_hits(indvEvacTime,j)==evacPhits(i,j));
             h1 = histcounts(rP_hits(1:indvEvacTime,j),bins);
@@ -65,7 +64,7 @@ for i = 1:50 % iterate through each individual
     end
 end
 
-for i = 1:50 % iterate over all individials
+for i = 1:50 % iterate over all individuals
     J(i,:) = J(i,:) + histcounts(evacPhits(i,:),bins);
 end
 
@@ -83,8 +82,8 @@ options = optimoptions(@fminunc,'MaxFunEvals',10000);
 power_model = @(Ph,theta_i) theta_i(1)*Ph.^theta_i(2);
 
 % determine standard deviations from boostrapping
-% [bootstat,bootsam]=bootstrp(1000,@(z)mle_fit(z,gameinfo,evapeocumu,evacuateTime,evacuateProb),z);
-% std_theta = std(bootstat);
+[bootstat,bootsam]=bootstrp(1000,@(z)mle_fit(z,gameinfo,evapeocumu,evacuateTime,evacuateProb),z);
+std_theta = std(bootstat);
 
 % plot decision model
 % figure('position',[0 0 375 281.25])

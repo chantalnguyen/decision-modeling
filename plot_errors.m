@@ -3,7 +3,7 @@
 
 load data/mle_Ind50 P_Ind50 evac
 evac50 = evac;
-load data/mle_Ind25 P_Ind25 evac
+load data/mle_Ind25_test2 P_Ind25 evac
 evac25 = evac;
 clear evac;
 
@@ -140,7 +140,7 @@ tightfig;
 % savefig('figures/meanfinalerror_50')
 print('figures/meanfinalerror_50','-dsvg','-r300')
 %%
-load data/mle_Ind25 rP_hits
+load data/mle_Ind25_test2 rP_hits
 figure()
 final_error_hit = mean(res25(end,rP_hits(end,:)==1));
 final_error_miss = mean(res25(end,rP_hits(end,:)==0));

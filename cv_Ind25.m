@@ -139,11 +139,22 @@ Jtrue = sum(Jtrue,1);
 Jtrue = Jtrue(2:end);
 P_hit_range = P_hit_range(2:end);
 
+% theta_0 = [0.8; 100];
+% powerfun = @(theta_i)llfun(H(2:end),J(2:end),theta_i,P_hit_range(2:end),space);
+% 
+% options = optimoptions(@fminunc,'MaxFunEvals',10000);
+% 
+% % minimize (negative of) log-likelihood function
+% % [theta,~] = fminunc(powerfun,theta_0,options);
+% [theta,~] = fmincon(powerfun,theta_0,[1 0; 0 0],[.88239;0],[],[],[.88239;-Inf],[Inf;Inf]);
+% 
+% power25model = @(Ph,space,theta_i) theta_i(1)*Ph.^(theta_i(2)/space);
 
-theta_0 = [0.8; 10];
+
+theta_0 = [0.8; 100];
 powerfun = @(theta_i)llfun(Htrue',Jtrue',theta_i,P_hit_range,space);
 options = optimoptions(@fminunc,'MaxFunEvals',10000);
-[theta_power_all,~] = fminunc(powerfun,theta_0,options);
+[theta_power_all,~] = fmincon(powerfun,theta_0,[1 0; 0 0],[.88239;0],[],[],[.88239;-Inf],[Inf;Inf]);
 power25model = @(Ph,space,theta_i) theta_i(1)*Ph.^(theta_i(2)/space);
 
 theta_cv=zeros(2,length(z));
@@ -151,7 +162,8 @@ for i = 1:length(z)
     powerfun = @(theta_i)llfun(H(:,:,i),J(:,:,i),theta_i,P_hit_range,space); % cannot include P_hit = 0
 
     options = optimoptions(@fminunc,'MaxFunEvals',10000);
-    [thetas,~] = fminunc(powerfun,theta_0,options);
+%     [thetas,~] = fminunc(powerfun,theta_0,options);
+    [thetas,~]=fmincon(powerfun,theta_0,[1 0; 0 0],[.88239;0],[],[],[.88239;-Inf],[Inf;Inf]);
     theta_cv(:,i) = thetas;
 end
 %%
@@ -200,4 +212,4 @@ rmse_cv = sqrt(mse_cv);
 
 % save workspace
 clear bins temp i j
-save('data/crossval_Ind25.mat')
+save('data/crossval_Ind25_new_2.mat')

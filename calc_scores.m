@@ -11,10 +11,13 @@
 function scoremat = calc_scores(evac_data,trial_numbers,gameinfo)
 scoremat = evac_data;
     for i = 1:length(trial_numbers)
-        if gameinfo(trial_numbers(i),end) == 1 || trial_numbers(i) == 30 || trial_numbers(i) == 74 || trial_numbers(i) == 121 % hit
+        if gameinfo(trial_numbers(i),end) == 1 | trial_numbers(i) == 30 | trial_numbers(i) == 74 | trial_numbers(i) == 121 % hit
             scoremat(:,i) = scoremat(:,i)*4;
         else % miss
             scoremat(:,i) = scoremat(:,i)*-2 + 10;
         end
     end
+%     if max(trial_numbers) < size(evac_data,2)
+%         scoremat = scoremat(:,trial_numbers);
+%     end
 end

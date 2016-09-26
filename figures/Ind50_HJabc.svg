@@ -41,8 +41,8 @@
      id="namedview769"
      showgrid="false"
      inkscape:zoom="0.94"
-     inkscape:cx="75.021277"
-     inkscape:cy="352.05287"
+     inkscape:cx="61.19149"
+     inkscape:cy="1373.3295"
      inkscape:window-x="410"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -7014,11 +7014,6 @@
            id="g2581">
           <path
              style="stroke:none"
-             d="m 79.0545,382 32.4364,0 0,-65.3333 -32.4364,0 z"
-             id="path2583"
-             inkscape:connector-curvature="0" />
-          <path
-             style="stroke:none"
              d="m 119.6,382 32.4364,0 0,0 -32.4364,0 z"
              id="path2585"
              inkscape:connector-curvature="0" />
@@ -7071,11 +7066,6 @@
         <g
            style="color-interpolation:linearRGB;color-rendering:optimizeQuality;image-rendering:optimizeQuality;text-rendering:geometricPrecision"
            id="g2605">
-          <path
-             d="m 79.0545,382 0,-65.3333 32.4364,0 0,65.3333 -32.4364,0"
-             style="fill:none;fill-rule:evenodd"
-             id="path2607"
-             inkscape:connector-curvature="0" />
           <path
              d="m 119.6,382 0,0 32.4364,0 0,0 -32.4364,0"
              style="fill:none;fill-rule:evenodd"

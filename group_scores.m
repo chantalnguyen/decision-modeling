@@ -54,16 +54,16 @@ indsc = allscores(:,Ind(:,1));
 [~,indSort] = sort(sum(indsc,2));
 group_tot_sort = group_tot(indSort);
 
-% Plot scores
-figure()
-plot(group_tot_sort,'o');
-hold on
-plot(ftg5_tot(indSort)+100,'o');
-plot(ftg25_tot(indSort)+100,'o');
-plot(ltg5_tot(indSort)+300,'o');
-plot(ltg25_tot(indSort)+250,'o');
-plot(mv5_tot(indSort)+80,'o');
-plot(mv25_tot(indSort)+150,'o');
+% % Plot scores
+% figure()
+% plot(group_tot_sort,'o');
+% hold on
+% plot(ftg5_tot(indSort)+100,'o');
+% plot(ftg25_tot(indSort)+100,'o');
+% plot(ltg5_tot(indSort)+300,'o');
+% plot(ltg25_tot(indSort)+250,'o');
+% plot(mv5_tot(indSort)+80,'o');
+% plot(mv25_tot(indSort)+150,'o');
 
 %% Calculate group scores and plot, only using group games after trial 44
 
@@ -130,30 +130,30 @@ indsc = allscores(:,Ind(:,1));
 group_tot_sort = group_tot(indSort);
 
 % Plot scores
-figure('position',[0 0 700 525])
-plot(group_tot_sort,'o','MarkerSize',6);
-hold on
-blank = plot(1:50,1:50,'o','color',[1 1 1]);
-set(blank,'visible','off')
-ax = gca; ax.ColorOrderIndex = 2; 
-plot(ftg5_tot(indSort)+230,'o','MarkerSize',6);
-h = plot(ftg25_tot(indSort)+230,'o','MarkerSize',6);
-hcolor = get(h,'color');
-plot(ltg5_tot(indSort)+230,'o','MarkerSize',6);
-plot(ltg25_tot(indSort)+230,'o','MarkerSize',6);
-plot(mv5_tot(indSort)+230,'o','MarkerSize',6);
-plot(mv25_tot(indSort)+230,'o','MarkerSize',6);
-set(gca,'ticklength',[0.005 0.005])
-overlaps = find(ftg25_tot(indSort)==38); % some of the points coincide, make them more obvious
-plot(overlaps,38+230,'o','MarkerSize',4,'color',hcolor)
+% figure('position',[0 0 700 525])
+% plot(group_tot_sort,'o','MarkerSize',6);
+% hold on
+% blank = plot(1:50,1:50,'o','color',[1 1 1]);
+% set(blank,'visible','off')
+% ax = gca; ax.ColorOrderIndex = 2; 
+% plot(ftg5_tot(indSort)+230,'o','MarkerSize',6);
+% h = plot(ftg25_tot(indSort)+230,'o','MarkerSize',6);
+% hcolor = get(h,'color');
+% plot(ltg5_tot(indSort)+230,'o','MarkerSize',6);
+% plot(ltg25_tot(indSort)+230,'o','MarkerSize',6);
+% plot(mv5_tot(indSort)+230,'o','MarkerSize',6);
+% plot(mv25_tot(indSort)+230,'o','MarkerSize',6);
+% set(gca,'ticklength',[0.005 0.005])
+% overlaps = find(ftg25_tot(indSort)==38); % some of the points coincide, make them more obvious
+% plot(overlaps,38+230,'o','MarkerSize',4,'color',hcolor)
+% 
+% ylim([250 440])
+% set(gca,'ytick',[250:20:330 370:20:440])
+% set(gca,'yticklabel',{'20','40','60','80','100','370','390','410','430'})
+% set(gca,'fontsize',16)
+% xlabel('Participant (ordered by individual score)','fontsize',18)
+% ylabel('Group score','fontsize',18)
 
-ylim([250 440])
-set(gca,'ytick',[250:20:330 370:20:440])
-set(gca,'yticklabel',{'20','40','60','80','100','370','390','410','430'})
-set(gca,'fontsize',16)
-xlabel('Participant (ordered by individual score)','fontsize',18)
-ylabel('Group score','fontsize',18)
-
-columnlegend(4,{'All groups','','FTG-5','FTG-25','LTG-5','LTG-25','MV-5','MV-25'},'fontsize',16,'location','best','boxon')
+% columnlegend(4,{'All groups','','FTG-5','FTG-25','LTG-5','LTG-25','MV-5','MV-25'},'fontsize',16,'location','best','boxon')
 
 % savefig('groupscores')

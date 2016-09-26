@@ -98,7 +98,8 @@ for i = 1:length(z)
     set(shelter,'color',[0 0 1]); set(shelter,'LineWidth',4); set(shelter,'LineStyle',':');
     set(ax(1),'box','on')
     set(ax(2),'YColor','g')
-    ax(1).XLabel.String = 'time';
+    ax(1).XLabel.String = 'Time';
+    ax(1).YLabel.String = 'Evacuations';
     ax(1).YTick = 0:10:50; ax(2).YTick = 0:0.2:1;
     ax(1).YColor = 'k';
     ax(1).YLim = [0 50]; ax(2).YLim = [0 1];
@@ -108,12 +109,12 @@ for i = 1:length(z)
 end
 
 
-set(gcf,'units','pixels')
-set(gcf,'position',[0 0 1300 800])
-tightfig;
-pos=get(gcf,'position');
-set(gcf,'position',[pos(1:3) 800])
-tightfig;
+% set(gcf,'units','pixels')
+% set(gcf,'position',[0 0 1300 800])
+% tightfig;
+% pos=get(gcf,'position');
+% set(gcf,'position',[pos(1:3) 800])
+% tightfig;
 
 if saveFig
     savefig(['figures/' trial_type])
